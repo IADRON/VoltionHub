@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Importe o pacote
 import '../theme/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -23,20 +22,22 @@ class CustomTextField extends StatelessWidget {
       obscureText: isPassword,
       decoration: InputDecoration(
         labelText: labelText,
-        prefixIcon: Icon(icon, color: AppColors.laranjaVoltion),
+        suffixIcon: isPassword 
+          ? IconButton(
+            icon: Icon(
+              isPassword ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: () {
+              // Lógica para alternar a visibilidade da senha
+            },
+          ) : null,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
-        // Aplica a fonte e o estilo usando o pacote.
-        labelStyle: GoogleFonts.inter(
-          fontWeight: FontWeight.w500,
-          color: AppColors.cinzaEscuro,
+        labelStyle: AppColors.textTheme.bodyLarge?.copyWith(color: AppColors.branco.withOpacity(0.7)),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.branco),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: BorderSide(color: Colors.grey.shade400),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(color: AppColors.laranjaVoltion, width: 2),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.laranjaVoltion, width: 2),
         ),
       ),
     );

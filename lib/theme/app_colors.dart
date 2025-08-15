@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // Classe para centralizar a paleta de cores do aplicativo VoltionHub.
 class AppColors {
+
+  static const bool isDarkMode = false;
+
   // Cor primária para ações principais, CTAs e alertas de alta prioridade[cite: 22].
   // Representa energia, alerta e ação[cite: 23].
   static const Color laranjaVoltion = Color(0xFFFF4F00);
@@ -23,4 +27,6 @@ class AppColors {
 
   // Cor para falhas críticas e itens urgentes[cite: 32].
   static const Color vermelhoPerigo = Color(0xFFDC3545);
+
+  static TextTheme get textTheme => GoogleFonts.interTextTheme();
 }
