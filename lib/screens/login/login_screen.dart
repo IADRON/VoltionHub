@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart'; // Importe o pacote
 import '../../theme/app_colors.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
+import '../dashboard/dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -55,7 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
                 CustomButton(
                   text: 'Entrar',
-                  onPressed: () {},
+                  onPressed: () {
+                    if (_userIdController.text == 'eu' &&
+                        _passwordController.text == '123') {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => DashboardScreen(),
+                          ));
+                    }
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextButton(
