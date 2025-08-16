@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../theme/app_colors.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
   const Header({super.key});
@@ -7,29 +6,24 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.azulVoltion,
-      leading: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image.asset(
-          'assets/images/voltion_logo.png',
-          height: 20,
-          width: 20,
-        ),
+      // Remove o back button que aparece por padrão
+      automaticallyImplyLeading: false, 
+      backgroundColor: Theme.of(context).colorScheme.background,
+      
+      // Use a propriedade 'title' para a logo
+      title: Image.asset(
+        'assets/images/VoltionHubTransparent&SombrasLogotipoHeader.png',
+        height: 25,
       ),
-      title: const Text(
-        'VoltionHub',
-        style: TextStyle(
-          color: AppColors.branco,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      
+      // Ações permanecem as mesmas
       actions: [
         IconButton(
-          icon: const Icon(Icons.search, color: AppColors.branco),
+          icon: Icon(Icons.search, color: Theme.of(context).colorScheme.tertiary),
           onPressed: () {},
         ),
         IconButton(
-          icon: const Icon(Icons.person, color: AppColors.branco),
+          icon: Icon(Icons.person, color: Theme.of(context).colorScheme.tertiary),
           onPressed: () {},
         ),
       ],
