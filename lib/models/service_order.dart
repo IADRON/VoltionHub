@@ -4,6 +4,7 @@ class ServiceOrder {
   final String neighborhood;
   final String priority;
   final String assignedTeam;
+  final String description;
 
   ServiceOrder({
     required this.title,
@@ -11,5 +12,6 @@ class ServiceOrder {
     required this.neighborhood,
     required this.priority,
     required this.assignedTeam,
+    required this.description,
   });
 }
