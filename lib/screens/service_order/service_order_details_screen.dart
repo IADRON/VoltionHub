@@ -1,12 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:voltionhubapp/models/service_order.dart';
-import 'package:voltionhubapp/widgets/custom_button.dart';
 import 'package:voltionhubapp/theme/app_colors.dart';
+import 'package:voltionhubapp/widgets/custom_button.dart';
 
 class ServiceOrderDetailsScreen extends StatelessWidget {
   final ServiceOrder order;
 
   const ServiceOrderDetailsScreen({super.key, required this.order});
+
+  Color _getPriorityColor(String priority) {
+    switch (priority.toLowerCase()) {
+      case 'urgente':
+        return AppColors.vermelhoPerigo;
+      case 'média':
+        return AppColors.laranjaVoltion;
+      case 'baixa':
+        return AppColors.amareloAlerta;
+      case 'em andamento':
+        return AppColors.verdeSucesso;
+      default:
+        return AppColors.cinzaEscuro;
+    }
+  }
+
+  IconData _getPriorityIcon(String priority) {
+    switch (priority.toLowerCase()) {
+      case 'urgente':
+        return Icons.warning;
+      case 'média':
+        return Icons.info;
+      case 'baixa':
+        return Icons.arrow_downward;
+      case 'em andamento':
+        return Icons.construction;
+      default:
+        return Icons.notifications;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +49,38 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow('Endereço:', '${order.address}, ${order.neighborhood}'),
+            _buildDetailRow(
+                'Data:',
+                '${order.timestamp.day}/${order.timestamp.month}/${order.timestamp.year} às ${order.timestamp.hour}:${order.timestamp.minute.toString().padLeft(2, '0')}'),
+            _buildDetailRow(
+                'Endereço:', '${order.address}, ${order.neighborhood}'),
             _buildDetailRow('Equipe Designada:', order.assignedTeam),
-            _buildDetailRow('Prioridade:', order.priority,
-                valueColor: _getPriorityColor(order.priority)),
+            Row(
+              children: [
+                const Text(
+                  'Prioridade:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 8),
+                CircleAvatar(
+                  radius: 10,
+                  backgroundColor: _getPriorityColor(order.priority),
+                  child: Icon(
+                    _getPriorityIcon(order.priority),
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  order.priority,
+                  style: TextStyle(
+                    color: _getPriorityColor(order.priority),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
             const Divider(height: 32),
             Text(
               'Descrição do Problema',
@@ -71,18 +129,5 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-    Color _getPriorityColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case 'urgente':
-        return AppColors.vermelhoPerigo;
-      case 'alta':
-        return AppColors.amareloAlerta;
-      case 'média':
-        return AppColors.azulVoltion;
-      default:
-        return AppColors.cinzaEscuro;
-    }
   }
 }

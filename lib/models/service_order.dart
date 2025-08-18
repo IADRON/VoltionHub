@@ -5,6 +5,7 @@ class ServiceOrder {
   final String priority;
   final String assignedTeam;
   final String description;
+  final DateTime timestamp; // Adicionado
 
   ServiceOrder({
     required this.title,
@@ -13,5 +14,6 @@ class ServiceOrder {
     required this.priority,
     required this.assignedTeam,
     required this.description,
+    required this.timestamp, // Adicionado
   });
 }

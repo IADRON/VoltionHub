@@ -22,12 +22,29 @@ class ServiceOrderCard extends StatelessWidget {
     switch (priority.toLowerCase()) {
       case 'urgente':
         return AppColors.vermelhoPerigo;
-      case 'alta':
-        return AppColors.amareloAlerta;
       case 'média':
-        return AppColors.azulVoltion;
+        return AppColors.laranjaVoltion;
+      case 'baixa':
+        return AppColors.amareloAlerta;
+      case 'em andamento':
+        return AppColors.verdeSucesso;
       default:
         return AppColors.cinzaEscuro;
+    }
+  }
+
+  IconData _getPriorityIcon(String priority) {
+    switch (priority.toLowerCase()) {
+      case 'urgente':
+        return Icons.warning;
+      case 'média':
+        return Icons.info;
+      case 'baixa':
+        return Icons.arrow_downward;
+      case 'em andamento':
+        return Icons.construction;
+      default:
+        return Icons.notifications;
     }
   }
 
@@ -58,11 +75,26 @@ class ServiceOrderCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      order.title,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            order.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            overflow: TextOverflow.ellipsis,
                           ),
+                        ),
+                        Text(
+                          '${order.timestamp.day}/${order.timestamp.month} - ${order.timestamp.hour}:${order.timestamp.minute.toString().padLeft(2, '0')}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Text('${order.address}, ${order.neighborhood}'),
@@ -70,13 +102,25 @@ class ServiceOrderCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Chip(
-                          label: Text(
-                            order.priority,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: _getPriorityColor(order.priority),
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 12,
+                              backgroundColor: _getPriorityColor(order.priority),
+                              child: Icon(
+                                _getPriorityIcon(order.priority),
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              order.priority,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                         Text(
                           'Equipe: ${order.assignedTeam}',

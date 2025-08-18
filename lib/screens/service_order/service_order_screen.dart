@@ -12,32 +12,46 @@ class ServiceOrderScreen extends StatefulWidget {
 }
 
 class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
-  // Dados de exemplo
+  // Dados de exemplo atualizados
   final List<ServiceOrder> openOrders = [
     ServiceOrder(
-      title: 'Falha no Transformador #123',
-      address: 'Rua das Flores, 123',
-      neighborhood: 'Centro',
-      priority: 'Urgente',
-      assignedTeam: 'Equipe A',
-      description: 'O transformador apresenta superaquecimento e ruído excessivo. Necessita de verificação imediata.'
-    ),
+        title: 'Falha no Transformador #123',
+        address: 'Rua das Flores, 123',
+        neighborhood: 'Centro',
+        priority: 'Urgente',
+        assignedTeam: 'Equipe A',
+        description:
+            'O transformador apresenta superaquecimento e ruído excessivo. Necessita de verificação imediata.',
+        timestamp: DateTime.now().subtract(const Duration(hours: 1))),
     ServiceOrder(
-      title: 'Vibração Anormal #456',
-      address: 'Av. Principal, 456',
-      neighborhood: 'Vila Nova',
-      priority: 'Média',
-      assignedTeam: 'Equipe B',
-      description: 'Moradores relataram vibração incomum no poste do transformador.'
-    ),
+        title: 'Vibração Anormal #456',
+        address: 'Av. Principal, 456',
+        neighborhood: 'Vila Nova',
+        priority: 'Média',
+        assignedTeam: 'Equipe B',
+        description:
+            'Moradores relataram vibração incomum no poste do transformador.',
+        timestamp: DateTime.now().subtract(const Duration(hours: 4))),
     ServiceOrder(
-      title: 'Superaquecimento #789',
-      address: 'Beco da Calesita, 789',
-      neighborhood: 'Jardim América',
-      priority: 'Alta',
-      assignedTeam: 'Equipe A',
-      description: 'Alerta de superaquecimento recebido pelo sistema de monitoramento.'
-    ),
+        title: 'Manutenção Preventiva #789',
+        address: 'Beco da Calesita, 789',
+        neighborhood: 'Jardim América',
+        priority: 'Baixa',
+        assignedTeam: 'Equipe A',
+        description: 'Verificação de rotina agendada para hoje.',
+        timestamp: DateTime.now().subtract(const Duration(days: 1))),
+  ];
+
+  final List<ServiceOrder> inProgressOrders = [
+    ServiceOrder(
+        title: 'Superaquecimento #789',
+        address: 'Beco da Calesita, 789',
+        neighborhood: 'Jardim América',
+        priority: 'Em Andamento',
+        assignedTeam: 'Equipe A',
+        description:
+            'Alerta de superaquecimento recebido pelo sistema de monitoramento.',
+        timestamp: DateTime.now().subtract(const Duration(minutes: 30))),
   ];
 
   // Gerenciamento de estado para o modo de seleção
@@ -81,7 +95,7 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
         body: TabBarView(
           children: [
             _buildOrderList(openOrders),
-            _buildOrderList([]), // Lista vazia para "Em Andamento"
+            _buildOrderList(inProgressOrders), // Lista para "Em Andamento"
             _buildOrderList([]), // Lista vazia para "Concluídas"
           ],
         ),
@@ -152,7 +166,8 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ServiceOrderDetailsScreen(order: order),
+                  builder: (context) =>
+                      ServiceOrderDetailsScreen(order: order),
                 ),
               );
             }
