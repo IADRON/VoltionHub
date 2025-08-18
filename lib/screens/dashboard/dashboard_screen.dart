@@ -28,25 +28,24 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-
   final List<Transformer> transformers = [
-    Transformer(id: 'T001', status: 'online', latitude: -27.59537, longitude: -48.54804, details: 'Nº de série: 12345, Capacidade: 500kVA'),
-    Transformer(id: 'T002', status: 'offline', latitude: -27.59690, longitude: -48.54910, details: 'Nº de série: 67890, Capacidade: 750kVA'),
-    Transformer(id: 'T003', status: 'alerta', latitude: -27.59480, longitude: -48.54650, details: 'Nº de série: 13579, Superaquecimento detectado'),
+    Transformer(id: 'TR-45881', status: 'alerta', latitude: -27.59537, longitude: -48.54804, details: 'Capacidade: 500kVA\nEndereço: Rua das Flores, 123\nÚltima Manutenção: 10/07/2025'),
+    Transformer(id: 'TR-67890', status: 'offline', latitude: -27.59690, longitude: -48.54910, details: 'Capacidade: 750kVA\nEndereço: Av. Principal, 456\nÚltima Manutenção: 01/03/2025'),
+    Transformer(id: 'TR-13579', status: 'online', latitude: -27.59480, longitude: -48.54650, details: 'Capacidade: 300kVA\nEndereço: Beco da Calesita, 789\nÚltima Manutenção: 15/08/2025'),
   ];
 
-  Transformer? selectedTransformer;
-
   void _onMarkerTapped(Transformer transformer) {
-    setState(() {
-      selectedTransformer = transformer;
-    });
-  }
-
-  void _closePanel() {
-    setState(() {
-      selectedTransformer = null;
-    });
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return TransformerDetailsPanel(
+          transformer: transformer,
+          onClose: () => Navigator.of(context).pop(),
+        );
+      },
+    );
   }
 
   @override
@@ -59,21 +58,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             transformers: transformers,
             onMarkerTapped: _onMarkerTapped,
           ),
-          if (selectedTransformer != null)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: TransformerDetailsPanel(
-                transformer: selectedTransformer!,
-                onClose: _closePanel,
-              ),
-            ),
-          if (selectedTransformer == null)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SummaryCard(),
-            ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SummaryCard(),
+          ),
         ],
       ),
     );

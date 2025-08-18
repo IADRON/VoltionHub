@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voltionhubapp/screens/dashboard/dashboard_screen.dart';
 import 'screens/login/login_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: const DashboardScreen(),
     );
   }
 }

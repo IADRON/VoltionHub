@@ -11,7 +11,7 @@ class AppColors {
   static const Color azulVoltion = Color(0xFF1A233A);
 
   // Cor para ícones.
-  static Color icons = Color(0xFFFFFFFF).withOpacity(0.7);
+  static const Color icons = Color.fromARGB(255, 150, 150, 150);
 
   // Cor para textos principais e títulos, garantindo alta legibilidade.
   static const Color cinzaEscuro = Color(0xFF333333);

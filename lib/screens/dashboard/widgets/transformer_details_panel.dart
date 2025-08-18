@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voltionhubapp/screens/login/login_screen.dart';
-import '../../../screens/dashboard/dashboard_screen.dart'; // Importa a classe Transformer
+import 'package:google_fonts/google_fonts.dart';
+import 'package:voltionhubapp/screens/dashboard/widgets/details_panel/action_buttons.dart';
+import 'package:voltionhubapp/screens/dashboard/widgets/details_panel/metric_tile.dart';
+import '../../../screens/dashboard/dashboard_screen.dart'; 
 import '../../../theme/app_colors.dart';
 
 class TransformerDetailsPanel extends StatelessWidget {
@@ -13,82 +15,131 @@ class TransformerDetailsPanel extends StatelessWidget {
     required this.onClose,
   });
 
+  // Determina a cor do status
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'online':
+        return AppColors.verdeSucesso;
+      case 'offline':
+        return AppColors.vermelhoPerigo;
+      case 'alerta':
+        return AppColors.amareloAlerta;
+      default:
+        return AppColors.branco;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(12.0),
-      color: AppColors.azulVoltion.withOpacity(0.95),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+    // O widget principal agora é um Container para ser usado no BottomSheet
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16.0),
+        ),
+      ),
+      // Envolvemos o conteúdo com SingleChildScrollView para evitar overflow em telas menores
+      child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 1. Identificação Imediata
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Título do painel[cite: 116].
-                Text(
-                  'Detalhes do Ativo: ${transformer.id}',
-                  style: AppColors.textTheme.titleLarge?.copyWith(
-                    color: AppColors.branco,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      transformer.id,
+                      style: GoogleFonts.inter(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: _getStatusColor(transformer.status),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, color: AppColors.branco),
+                  icon: Icon(Icons.close, color: Theme.of(context).colorScheme.tertiary),
                   onPressed: onClose,
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            // Exibe o status com uma cor indicativa[cite: 109].
-            Text(
-              'Status: ${transformer.status.toUpperCase()}',
-              style: AppColors.textTheme.bodyLarge?.copyWith(
-                color: _getStatusColor(transformer.status),
-                fontWeight: FontWeight.bold,
-              ),
+            Divider(color: Theme.of(context).colorScheme.onSurface, height: 24),
+
+            // 2. Métricas Essenciais
+            MetricTile(
+              icon: Icons.thermostat_outlined,
+              label: 'Temperatura',
+              value: '85°C', // Valor de exemplo
+              valueColor: _getStatusColor(transformer.status),
+            ),
+            MetricTile(
+              icon: Icons.flash_on_outlined,
+              label: 'Tensão',
+              value: '218V', // Valor de exemplo
+              valueColor: Theme.of(context).colorScheme.onSurface,
+            ),
+            MetricTile(
+              icon: Icons.power_outlined,
+              label: 'Corrente',
+              value: '50A', // Valor de exemplo
+              valueColor: Theme.of(context).colorScheme.onSurface,
+            ),
+            MetricTile(
+              icon: Icons.vibration_outlined,
+              label: 'Vibração',
+              value: 'Normal', // Valor de exemplo
+              valueColor: Theme.of(context).colorScheme.onSurface,
             ),
             const SizedBox(height: 8),
-            // Informações detalhadas do transformador[cite: 118].
-            Text(
-              transformer.details,
-              style: AppColors.textTheme.bodyMedium?.copyWith(color: AppColors.branco.withOpacity(0.9)),
-            ),
-            const SizedBox(height: 20),
-            // Botão de ação primário[cite: 58].
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.laranjaVoltion,
-                foregroundColor: AppColors.branco,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+
+            // 4. Informações de Cadastro (Expansível)
+            ExpansionTile(
+              title: Text(
+                'Detalhes do Equipamento',
+                style: GoogleFonts.inter(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-                // Navegar para tela de ordem de serviço, por exemplo[cite: 124].
-              },
-              child: const Text('Criar Ordem de Serviço'),
+              iconColor: Theme.of(context).colorScheme.onSurface,
+              collapsedIconColor: Theme.of(context).colorScheme.onSurface,
+              children: [ // A lista de widgets filhos
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      transformer.details,
+                      style: GoogleFonts.inter(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+
+            // 3. Ações Contextuais
+            const ActionButtons(),
           ],
         ),
       ),
     );
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'online':
-        return Colors.greenAccent;
-      case 'offline':
-        return Colors.redAccent;
-      case 'alerta':
-        return Colors.yellowAccent;
-      default:
-        return AppColors.branco;
-    }
   }
 }
