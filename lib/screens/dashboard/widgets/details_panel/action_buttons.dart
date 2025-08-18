@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../theme/app_colors.dart';
+import 'package:voltionhubapp/screens/service_order/service_order_screen.dart';
 import '../../../../widgets/custom_button.dart';
 
 class ActionButtons extends StatelessWidget {
@@ -15,7 +15,7 @@ class ActionButtons extends StatelessWidget {
         CustomButton(
           text: 'Criar Ordem de Serviço',
           onPressed: () {
-            // Lógica para criar OS
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceOrderScreen()));
           },
         ),
         const SizedBox(height: 12),
