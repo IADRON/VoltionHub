@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Importe o pacote
+import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../main_navigation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -70,13 +70,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   CustomButton(
                     text: 'Entrar',
                     onPressed: () {
-                      if (_userIdController.text == 'eu' &&
-                          _passwordController.text == '123') {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DashboardScreen(),
-                            ));
+                      // Simulação de login
+                      if (_userIdController.text.isNotEmpty &&
+                          _passwordController.text.isNotEmpty) {
+                        Navigator.pushReplacement( // Use pushReplacement para não poder voltar para o login
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MainNavigationScreen(),
+                          ),
+                        );
                       }
                     },
                   ),

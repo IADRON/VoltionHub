@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voltionhubapp/screens/dashboard/dashboard_screen.dart';
 import 'package:voltionhubapp/screens/service_order/service_order_screen.dart';
+import 'package:voltionhubapp/screens/transformer_history/transformer_history_screen.dart';
+import 'package:voltionhubapp/services/maps_service.dart';
 import '../../../../widgets/custom_button.dart';
 
 class ActionButtons extends StatelessWidget {
-  const ActionButtons({super.key});
+  final Transformer transformer; // Adicionado para obter as coordenadas
+
+  const ActionButtons({super.key, required this.transformer}); // Modificado
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class ActionButtons extends StatelessWidget {
         CustomButton(
           text: 'Criar Ordem de Serviço',
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceOrderScreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ServiceOrderScreen()));
           },
         ),
         const SizedBox(height: 12),
@@ -24,7 +29,7 @@ class ActionButtons extends StatelessWidget {
           children: [
             TextButton.icon(
               onPressed: () {
-                // Lógica para navegar
+                MapsService.openMap(transformer.latitude, transformer.longitude);
               },
               icon: Icon(Icons.navigation_outlined, color: Theme.of(context).colorScheme.primary),
               label: Text(
@@ -34,7 +39,10 @@ class ActionButtons extends StatelessWidget {
             ),
             TextButton.icon(
               onPressed: () {
-                // Lógica para ver histórico
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TransformerHistoryScreen(transformer: transformer)),
+                );
               },
               icon: Icon(Icons.history_outlined, color: Theme.of(context).colorScheme.primary),
               label: Text(

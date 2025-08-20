@@ -3,6 +3,7 @@ import 'package:voltionhubapp/models/service_order.dart';
 import 'package:voltionhubapp/screens/intelligent_routing/intelligent_routing_screen.dart';
 import 'package:voltionhubapp/screens/service_order/service_order_details_screen.dart';
 import 'package:voltionhubapp/screens/service_order/widgets/service_order_card.dart';
+import '../service_order/widgets/os_form_screen.dart';
 
 class ServiceOrderScreen extends StatefulWidget {
   const ServiceOrderScreen({super.key});
@@ -95,10 +96,20 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
         body: TabBarView(
           children: [
             _buildOrderList(openOrders),
-            _buildOrderList(inProgressOrders), // Lista para "Em Andamento"
-            _buildOrderList([]), // Lista vazia para "Concluídas"
+            _buildOrderList(inProgressOrders),
+            _buildOrderList([]),
           ],
         ),
+        floatingActionButton: !_isSelectionMode ? FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const OsFormScreen()),
+            );
+          },
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: const Icon(Icons.add),
+        ) : null,
       ),
     );
   }

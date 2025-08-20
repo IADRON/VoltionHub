@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'widgets/header.dart';
 import 'widgets/map.dart';
 import 'widgets/summary_card.dart';
 import 'widgets/transformer_details_panel.dart';
+import 'widgets/header.dart';
 
 class Transformer {
   final String id;
@@ -58,10 +58,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             transformers: transformers,
             onMarkerTapped: _onMarkerTapped,
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SummaryCard(),
-          ),
+          const SummaryCard(), // Remova o Align
         ],
       ),
     );

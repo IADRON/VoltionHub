@@ -136,7 +136,7 @@ class TransformerDetailsPanel extends StatelessWidget {
             ),
 
             // 3. Ações Contextuais
-            const ActionButtons(),
+            ActionButtons(transformer: transformer),
           ],
         ),
       ),
