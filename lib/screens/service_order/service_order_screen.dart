@@ -3,7 +3,8 @@ import 'package:voltionhubapp/models/service_order.dart';
 import 'package:voltionhubapp/screens/intelligent_routing/intelligent_routing_screen.dart';
 import 'package:voltionhubapp/screens/service_order/service_order_details_screen.dart';
 import 'package:voltionhubapp/screens/service_order/widgets/service_order_card.dart';
-import '../service_order/widgets/os_form_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ServiceOrderScreen extends StatefulWidget {
   const ServiceOrderScreen({super.key});
@@ -13,51 +14,72 @@ class ServiceOrderScreen extends StatefulWidget {
 }
 
 class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
-  // Dados de exemplo atualizados
-  final List<ServiceOrder> openOrders = [
-    ServiceOrder(
-        title: 'Falha no Transformador #123',
-        address: 'Rua das Flores, 123',
-        neighborhood: 'Centro',
-        priority: 'Urgente',
-        assignedTeam: 'Equipe A',
-        description:
-            'O transformador apresenta superaquecimento e ruído excessivo. Necessita de verificação imediata.',
-        timestamp: DateTime.now().subtract(const Duration(hours: 1))),
-    ServiceOrder(
-        title: 'Vibração Anormal #456',
-        address: 'Av. Principal, 456',
-        neighborhood: 'Vila Nova',
-        priority: 'Média',
-        assignedTeam: 'Equipe B',
-        description:
-            'Moradores relataram vibração incomum no poste do transformador.',
-        timestamp: DateTime.now().subtract(const Duration(hours: 4))),
-    ServiceOrder(
-        title: 'Manutenção Preventiva #789',
-        address: 'Beco da Calesita, 789',
-        neighborhood: 'Jardim América',
-        priority: 'Baixa',
-        assignedTeam: 'Equipe A',
-        description: 'Verificação de rotina agendada para hoje.',
-        timestamp: DateTime.now().subtract(const Duration(days: 1))),
-  ];
-
-  final List<ServiceOrder> inProgressOrders = [
-    ServiceOrder(
-        title: 'Superaquecimento #789',
-        address: 'Beco da Calesita, 789',
-        neighborhood: 'Jardim América',
-        priority: 'Em Andamento',
-        assignedTeam: 'Equipe A',
-        description:
-            'Alerta de superaquecimento recebido pelo sistema de monitoramento.',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 30))),
-  ];
-
-  // Gerenciamento de estado para o modo de seleção
+  List<ServiceOrder> openOrders = [];
+  bool isLoading = true;
   bool _isSelectionMode = false;
   final List<ServiceOrder> _selectedOrders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchServiceOrders();
+  }
+
+  Future<void> _fetchServiceOrders() async {
+    // IMPORTANTE: Use o IP da sua máquina na rede Wi-Fi.
+    final url = Uri.parse('http://192.168.100.51:3000/service-orders');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          openOrders = data.map((item) => ServiceOrder(
+                // Mapeando o 'id' que vem da API
+                id: item['id'],
+                title: item['title'],
+                address: item['address'],
+                neighborhood: item['neighborhood'],
+                priority: item['priority'],
+                assignedTeam: item['assigned_team'],
+                description: item['description'],
+                timestamp: DateTime.parse(item['timestamp']),
+              )).toList();
+          isLoading = false;
+        });
+      } else {
+        setState(() => isLoading = false);
+      }
+    } catch (e) {
+      print(e);
+      setState(() => isLoading = false);
+    }
+  }
+
+  // --- FUNÇÃO DE DELETAR ---
+  Future<void> _deleteOrder(int orderId) async {
+    final url = Uri.parse('http://192.168.100.51:3000/service-orders/$orderId');
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 204) {
+        setState(() {
+          openOrders.removeWhere((order) => order.id == orderId);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ordem de serviço deletada.'), backgroundColor: Colors.green),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Falha ao deletar a ordem.'), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro de conexão.'), backgroundColor: Colors.red),
+      );
+    }
+  }
 
   void _toggleSelection(ServiceOrder order) {
     setState(() {
@@ -66,7 +88,6 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
       } else {
         _selectedOrders.add(order);
       }
-      // Se não houver mais itens selecionados, sai do modo de seleção
       if (_selectedOrders.isEmpty) {
         _isSelectionMode = false;
       }
@@ -96,20 +117,10 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
         body: TabBarView(
           children: [
             _buildOrderList(openOrders),
-            _buildOrderList(inProgressOrders),
-            _buildOrderList([]),
+            _buildOrderList([]), // Placeholder para "Em Andamento"
+            _buildOrderList([]), // Placeholder para "Concluídas"
           ],
         ),
-        floatingActionButton: !_isSelectionMode ? FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const OsFormScreen()),
-            );
-          },
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          child: const Icon(Icons.add),
-        ) : null,
       ),
     );
   }
@@ -155,39 +166,54 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
   }
 
   Widget _buildOrderList(List<ServiceOrder> orders) {
-    if (orders.isEmpty) {
-      return const Center(child: Text("Nenhuma ordem de serviço aqui."));
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
     }
-
+    if (orders.isEmpty) {
+      return const Center(child: Text("Nenhuma ordem de serviço encontrada."));
+    }
     return ListView.builder(
       itemCount: orders.length,
       itemBuilder: (context, index) {
         final order = orders[index];
         final isSelected = _selectedOrders.contains(order);
 
-        return ServiceOrderCard(
-          order: order,
-          isSelected: isSelected,
-          isSelectionMode: _isSelectionMode,
-          onTap: () {
-            if (_isSelectionMode) {
-              _toggleSelection(order);
-            } else {
-              // Navega para os detalhes se não estiver em modo de seleção
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ServiceOrderDetailsScreen(order: order),
-                ),
-              );
-            }
+        // --- ADICIONADO DISMISSIBLE PARA DELETAR ---
+        return Dismissible(
+          key: Key(order.id.toString()), // Chave única para o widget
+          direction: DismissDirection.endToStart, // Deslizar da direita para a esquerda
+          onDismissed: (direction) {
+            _deleteOrder(order.id); // Chama a função para deletar
           },
-          onLongPress: () {
-            if (!_isSelectionMode) {
-              _activateSelectionMode(order);
-            }
-          },
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
+          child: ServiceOrderCard(
+            order: order,
+            isSelected: isSelected,
+            isSelectionMode: _isSelectionMode,
+            onTap: () {
+              if (_isSelectionMode) {
+                _toggleSelection(order);
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ServiceOrderDetailsScreen(order: order),
+                  ),
+                );
+              }
+            },
+            onLongPress: () {
+              if (!_isSelectionMode) {
+                _activateSelectionMode(order);
+              }
+            },
+          ),
         );
       },
     );

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:voltionhubapp/models/service_order.dart';
 import 'package:voltionhubapp/widgets/custom_button.dart';
 import 'package:voltionhubapp/widgets/custom_textfield.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class OsFormScreen extends StatefulWidget {
-  final ServiceOrder? order; // Nullable for creating new OS
+  final ServiceOrder? order;
 
   const OsFormScreen({super.key, this.order});
 
@@ -41,6 +43,46 @@ class _OsFormScreenState extends State<OsFormScreen> {
     _descriptionController.dispose();
     super.dispose();
   }
+  
+  // --- FUNÇÃO DE SALVAR ---
+  Future<void> _saveOrder() async {
+    if (_formKey.currentState!.validate()) {
+      // Substitua pelo IP da sua máquina
+      final url = Uri.parse('http://192.168.100.51:3000/service-orders');
+
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'title': _titleController.text,
+            'address': _addressController.text,
+            'neighborhood': _neighborhoodController.text,
+            'priority': _priority,
+            'assigned_team': _teamController.text,
+            'description': _descriptionController.text,
+          }),
+        );
+
+        if (response.statusCode == 201) { // 201 = Created
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Ordem de Serviço salva com sucesso!'), backgroundColor: Colors.green),
+          );
+          // Retorna 'true' para a tela anterior para indicar que a lista deve ser atualizada
+          Navigator.of(context).pop(true);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Falha ao salvar a Ordem de Serviço.'), backgroundColor: Colors.red),
+          );
+        }
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erro de conexão com o servidor.'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +105,7 @@ class _OsFormScreenState extends State<OsFormScreen> {
               const SizedBox(height: 16),
               CustomTextField(controller: _teamController, labelText: 'Equipe Designada', icon: Icons.group),
               const SizedBox(height: 16),
-               DropdownButtonFormField<String>(
+              DropdownButtonFormField<String>(
                 value: _priority,
                 decoration: const InputDecoration(
                   labelText: 'Prioridade',
@@ -94,10 +136,8 @@ class _OsFormScreenState extends State<OsFormScreen> {
               const SizedBox(height: 24),
               CustomButton(
                 text: 'Salvar',
-                onPressed: () {
-                  // Aqui você adicionaria a lógica para salvar os dados
-                  Navigator.of(context).pop();
-                },
+                // Chamando a função _saveOrder
+                onPressed: _saveOrder,
               ),
             ],
           ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:voltionhubapp/screens/dashboard/dashboard_screen.dart';
-import 'package:voltionhubapp/screens/service_order/service_order_screen.dart';
 import 'package:voltionhubapp/screens/transformer_history/transformer_history_screen.dart';
 import 'package:voltionhubapp/services/maps_service.dart';
+import '../../../service_order/widgets/os_form_screen.dart';
 import '../../../../widgets/custom_button.dart';
 
 class ActionButtons extends StatelessWidget {
@@ -20,7 +20,7 @@ class ActionButtons extends StatelessWidget {
         CustomButton(
           text: 'Criar Ordem de Serviço',
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ServiceOrderScreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const OsFormScreen()));
           },
         ),
         const SizedBox(height: 12),
