@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voltionhubapp/models/history_event.dart';
-import 'package:voltionhubapp/screens/dashboard/dashboard_screen.dart';
+import 'package:voltionhubapp/models/transformer.dart';
 
 class TransformerHistoryScreen extends StatelessWidget {
   final Transformer transformer;

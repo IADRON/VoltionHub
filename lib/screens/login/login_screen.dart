@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../theme/app_colors.dart';
+import '../../core/common/constants/theme/app_colors.dart';
+import '../../core/common/constants/app_assets.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
 import '../main_navigation.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Image.asset(
-                    'assets/images/voltion_logo4.png',
+                    AppAssets.logo,
                     height: 150,
                     semanticLabel: 'Logotipo VoltionHub',
                   ),
@@ -70,16 +71,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   CustomButton(
                     text: 'Entrar',
                     onPressed: () {
-                      // Simulação de login
-                      if (_userIdController.text.isNotEmpty &&
-                          _passwordController.text.isNotEmpty) {
-                        Navigator.pushReplacement( // Use pushReplacement para não poder voltar para o login
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const MainNavigationScreen(),
                           ),
                         );
-                      }
                     },
                   ),
                   const SizedBox(height: 16),
@@ -87,9 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {},
                     child: Text(
                       'Esqueci minha senha',
-                      // Aplica a fonte e o estilo usando o pacote.
                       style: GoogleFonts.inter(
-                        color: AppColors.laranjaVoltion,
+                        color: AppColors.orange,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

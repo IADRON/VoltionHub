@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../theme/app_colors.dart';
+import '../../../../core/common/constants/theme/app_colors.dart';
 
 class MetricTile extends StatelessWidget {
   final IconData icon;
@@ -13,7 +13,7 @@ class MetricTile extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
-    this.valueColor = AppColors.branco,
+    this.valueColor = AppColors.white,
   });
 
   @override

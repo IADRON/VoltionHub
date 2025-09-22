@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voltionhubapp/models/service_order.dart';
-import 'package:voltionhubapp/theme/app_colors.dart';
+import 'package:voltionhubapp/core/common/constants/theme/app_colors.dart';
 import 'package:voltionhubapp/widgets/custom_button.dart';
 
 class ServiceOrderDetailsScreen extends StatelessWidget {
@@ -11,15 +11,15 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
   Color _getPriorityColor(String priority) {
     switch (priority.toLowerCase()) {
       case 'urgente':
-        return AppColors.vermelhoPerigo;
+        return AppColors.danger;
       case 'média':
-        return AppColors.laranjaVoltion;
+        return AppColors.orange;
       case 'baixa':
-        return AppColors.amareloAlerta;
+        return AppColors.alert;
       case 'em andamento':
-        return AppColors.verdeSucesso;
+        return AppColors.sucess;
       default:
-        return AppColors.cinzaEscuro;
+        return AppColors.darkGrey;
     }
   }
 
@@ -42,7 +42,7 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(order.title),
+        title: Text(order.transformer),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -88,7 +88,7 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              order.description,
+              order.problem,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 24),

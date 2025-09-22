@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:voltionhubapp/screens/dashboard/dashboard_screen.dart';
+import 'package:voltionhubapp/models/transformer.dart';
 import 'package:voltionhubapp/screens/transformer_history/transformer_history_screen.dart';
-import 'package:voltionhubapp/services/maps_service.dart';
+import 'package:voltionhubapp/core/services/maps_service.dart';
 import '../../../service_order/widgets/os_form_screen.dart';
 import '../../../../widgets/custom_button.dart';
 

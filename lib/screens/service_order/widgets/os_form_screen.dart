@@ -26,11 +26,11 @@ class _OsFormScreenState extends State<OsFormScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.order?.title ?? '');
+    _titleController = TextEditingController(text: widget.order?.transformer ?? '');
     _addressController = TextEditingController(text: widget.order?.address ?? '');
     _neighborhoodController = TextEditingController(text: widget.order?.neighborhood ?? '');
     _teamController = TextEditingController(text: widget.order?.assignedTeam ?? '');
-    _descriptionController = TextEditingController(text: widget.order?.description ?? '');
+    _descriptionController = TextEditingController(text: widget.order?.problem ?? '');
     _priority = widget.order?.priority ?? 'Baixa';
   }
 
@@ -48,7 +48,7 @@ class _OsFormScreenState extends State<OsFormScreen> {
   Future<void> _saveOrder() async {
     if (_formKey.currentState!.validate()) {
       // Substitua pelo IP da sua máquina
-      final url = Uri.parse('http://192.168.100.51:3000/service-orders');
+      final url = Uri.parse('http://172.16.1.121:3000/service-orders');
 
       try {
         final response = await http.post(

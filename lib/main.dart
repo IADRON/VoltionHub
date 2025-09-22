@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/login/login_screen.dart'; // Mude o import
-import 'theme/app_theme.dart';
+import 'core/common/constants/theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());

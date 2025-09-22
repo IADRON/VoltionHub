@@ -2,9 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:voltionhubapp/models/team.dart';
-import 'package:voltionhubapp/services/api_service.dart';
+import 'package:voltionhubapp/core/services/api/api_service.dart';
 import 'widgets/team_card.dart';
-import 'widgets/team_form_dialog.dart'; // We will create this next
+import 'widgets/team_form_dialog.dart';
+import 'team_details_screen.dart'; // Import the new details screen
 
 class TeamsScreen extends StatefulWidget {
   const TeamsScreen({super.key});
@@ -16,7 +17,7 @@ class TeamsScreen extends StatefulWidget {
 class _TeamsScreenState extends State<TeamsScreen> {
   final ApiService _apiService = ApiService();
   late Future<List<Team>> _teamsFuture;
-   List<Team> _allTeams = [];
+  List<Team> _allTeams = [];
   List<Team> _filteredTeams = [];
   final TextEditingController _searchController = TextEditingController();
 
@@ -48,27 +49,26 @@ class _TeamsScreenState extends State<TeamsScreen> {
     });
   }
 
-  void _showTeamForm({Team? team}) async {
-    final result = await showDialog<bool>(
+  void _showTeamForm({Team? team}) {
+    showModalBottomSheet(
       context: context,
-      builder: (context) => TeamFormDialog(
-        team: team,
-        // For simplicity, I'm hardcoding branchId. In a real app,
-        // you would pass the current sub-admin's branchId.
-        branchId: 1,
-        apiService: _apiService,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: TeamFormBottomSheet(
+          team: team,
+          branchId: 1, // You might want to pass the actual branchId here
+          apiService: _apiService,
+          onSave: _loadTeams,
+        ),
       ),
     );
-
-    if (result == true) {
-      _loadTeams(); // Reload the list if a team was added/edited
-    }
   }
 
    void _deleteTeam(int teamId) async {
     try {
       await _apiService.deleteTeam(teamId);
-      _loadTeams(); // Refresh list
+      _loadTeams();
        ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Team deleted successfully!'), backgroundColor: Colors.green),
       );
@@ -76,6 +76,19 @@ class _TeamsScreenState extends State<TeamsScreen> {
        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to delete team: $e'), backgroundColor: Colors.red),
       );
+    }
+  }
+
+  void _navigateToTeamDetails(Team team) async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TeamDetailsScreen(team: team),
+      ),
+    );
+
+    if (result == true) {
+      _loadTeams();
     }
   }
 
@@ -123,6 +136,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
                     final team = _filteredTeams[index];
                     return TeamCard(
                       team: team,
+                      onTap: () => _navigateToTeamDetails(team), // Add this
                       onEdit: () => _showTeamForm(team: team),
                       onDelete: () => _deleteTeam(team.id),
                     );

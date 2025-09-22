@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../../screens/dashboard/dashboard_screen.dart'; // Importa a classe Transformer
+import 'package:voltionhubapp/models/transformer.dart';
 
 class Map extends StatelessWidget {
   final List<Transformer> transformers;
@@ -12,15 +12,14 @@ class Map extends StatelessWidget {
     required this.onMarkerTapped,
   });
 
-  // Define a cor do marcador com base no status do transformador[cite: 110, 111, 112].
   BitmapDescriptor _getMarkerColor(String status) {
     switch (status) {
       case 'online':
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen); // Verde para online
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
       case 'offline':
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed); // Vermelho para offline
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
       case 'alerta':
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow); // Amarelo para alerta
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
       default:
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure);
     }

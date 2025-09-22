@@ -26,22 +26,20 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
   }
 
   Future<void> _fetchServiceOrders() async {
-    // IMPORTANTE: Use o IP da sua máquina na rede Wi-Fi.
-    final url = Uri.parse('http://192.168.100.51:3000/service-orders');
+    final url = Uri.parse('http://172.16.1.121:3000/service-orders');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
           openOrders = data.map((item) => ServiceOrder(
-                // Mapeando o 'id' que vem da API
                 id: item['id'],
-                title: item['title'],
+                transformer: item['transformer_id'],
                 address: item['address'],
                 neighborhood: item['neighborhood'],
                 priority: item['priority'],
                 assignedTeam: item['assigned_team'],
-                description: item['description'],
+                problem: item['problem'],
                 timestamp: DateTime.parse(item['timestamp']),
               )).toList();
           isLoading = false;
@@ -57,7 +55,7 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
 
   // --- FUNÇÃO DE DELETAR ---
   Future<void> _deleteOrder(int orderId) async {
-    final url = Uri.parse('http://192.168.100.51:3000/service-orders/$orderId');
+    final url = Uri.parse('http://172.16.1.121:3000/service-orders/$orderId');
     try {
       final response = await http.delete(url);
 
@@ -178,12 +176,11 @@ class _ServiceOrderScreenState extends State<ServiceOrderScreen> {
         final order = orders[index];
         final isSelected = _selectedOrders.contains(order);
 
-        // --- ADICIONADO DISMISSIBLE PARA DELETAR ---
         return Dismissible(
-          key: Key(order.id.toString()), // Chave única para o widget
-          direction: DismissDirection.endToStart, // Deslizar da direita para a esquerda
+          key: Key(order.id.toString()),
+          direction: DismissDirection.endToStart,
           onDismissed: (direction) {
-            _deleteOrder(order.id); // Chama a função para deletar
+            _deleteOrder(order.id);
           },
           background: Container(
             color: Colors.red,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:voltionhubapp/models/transformer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:voltionhubapp/screens/dashboard/widgets/details_panel/action_buttons.dart';
 import 'package:voltionhubapp/screens/dashboard/widgets/details_panel/metric_tile.dart';
-import '../../../screens/dashboard/dashboard_screen.dart'; 
-import '../../../theme/app_colors.dart';
+import '../../../core/common/constants/theme/app_colors.dart';
 
 class TransformerDetailsPanel extends StatelessWidget {
   final Transformer transformer;
@@ -19,13 +19,13 @@ class TransformerDetailsPanel extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'online':
-        return AppColors.verdeSucesso;
+        return AppColors.sucess;
       case 'offline':
-        return AppColors.vermelhoPerigo;
+        return AppColors.danger;
       case 'alerta':
-        return AppColors.amareloAlerta;
+        return AppColors.alert;
       default:
-        return AppColors.branco;
+        return AppColors.white;
     }
   }
 
@@ -47,7 +47,6 @@ class TransformerDetailsPanel extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Identificação Imediata
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -107,7 +106,6 @@ class TransformerDetailsPanel extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // 4. Informações de Cadastro (Expansível)
             ExpansionTile(
               title: Text(
                 'Detalhes do Equipamento',
@@ -118,13 +116,13 @@ class TransformerDetailsPanel extends StatelessWidget {
               ),
               iconColor: Theme.of(context).colorScheme.onSurface,
               collapsedIconColor: Theme.of(context).colorScheme.onSurface,
-              children: [ // A lista de widgets filhos
+              children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      transformer.details,
+                      "Capacidade: ${transformer.capacity}\nEndereço: ${transformer.address}\nÚltima Manutenção: ${transformer.lastMaintenance}",
                       style: GoogleFonts.inter(
                         color: Theme.of(context).colorScheme.onSecondary,
                         height: 1.5,

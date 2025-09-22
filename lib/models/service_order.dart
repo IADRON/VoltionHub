@@ -1,21 +1,21 @@
 class ServiceOrder {
-  final int id; // <-- ADICIONADO
-  final String title;
+  final int id;
+  final String transformer;
   final String address;
   final String neighborhood;
   final String priority;
   final String assignedTeam;
-  final String description;
+  final String problem;
   final DateTime timestamp;
 
   ServiceOrder({
-    required this.id, // <-- ADICIONADO
-    required this.title,
+    required this.id,
+    required this.transformer,
     required this.address,
     required this.neighborhood,
     required this.priority,
     required this.assignedTeam,
-    required this.description,
+    required this.problem,
     required this.timestamp,
   });
 }

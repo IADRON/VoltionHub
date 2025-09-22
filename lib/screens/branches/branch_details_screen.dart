@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:voltionhubapp/models/branch.dart';
 import 'package:voltionhubapp/models/team.dart';
-import 'package:voltionhubapp/services/api_service.dart'; // Import the ApiService
+import 'package:voltionhubapp/core/services/api/api_service.dart';
 
 class BranchDetailsScreen extends StatefulWidget {
   final Branch branch;
@@ -21,7 +21,6 @@ class _BranchDetailsScreenState extends State<BranchDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch teams from the API when the screen loads
     _teamsFuture = _apiService.getTeamsForBranch(widget.branch.id);
   }
 
@@ -40,15 +39,15 @@ class _BranchDetailsScreenState extends State<BranchDetailsScreen> {
           const SizedBox(height: 24),
 
           _buildSectionTitle(context, 'Sub-Admins'),
-          // This part remains the same, assuming subAdmins are loaded with the branch
-          ...widget.branch.subAdmins.map((adminId) => ListTile(
+          // CORREÇÃO APLICADA AQUI
+          ...widget.branch.subAdmins.map((admin) => ListTile(
                 leading: const Icon(Icons.person_outline),
-                title: Text(adminId), // In a real app, you might fetch user details here
+                title: Text(admin.name), // Usar admin.name em vez do objeto inteiro
+                subtitle: Text(admin.email),
               )),
           const SizedBox(height: 24),
 
           _buildSectionTitle(context, 'Teams'),
-          // Use a FutureBuilder to display teams from the API
           FutureBuilder<List<Team>>(
             future: _teamsFuture,
             builder: (context, snapshot) {

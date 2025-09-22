@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../theme/app_colors.dart';
+import '../../../core/common/constants/theme/app_colors.dart';
+import 'package:voltionhubapp/models/transformer.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SummaryCard extends StatefulWidget {
   const SummaryCard({super.key});
@@ -9,8 +12,53 @@ class SummaryCard extends StatefulWidget {
 }
 
 class _SummaryCardState extends State<SummaryCard> {
-  // -1 para a esquerda, 0 para o centro, 1 para a direita
   int _positionState = 0;
+  bool _isLoading = true;
+  int _onlineCount = 0;
+  int _alertCount = 0;
+  int _offlineCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTransformersData();
+  }
+
+  Future<void> _fetchTransformersData() async {
+    final url = Uri.parse('http://172.16.1.121:3000/transformers');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        final allTransformers = data.map((item) => Transformer(
+          id: item['id'],
+          status: item['status'],
+          latitude: item['latitude'],
+          longitude: item['longitude'],
+          capacity: item['capacity'],
+          address: item['address'],
+          lastMaintenance: item['last_maintenance'],
+        )).toList();
+
+        setState(() {
+          _onlineCount = allTransformers.where((t) => t.status == 'online').length;
+          _alertCount = allTransformers.where((t) => t.status == 'alerta').length;
+          _offlineCount = allTransformers.where((t) => t.status == 'offline').length;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        print('Failed to load transformers');
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print(e);
+    }
+  }
 
   Alignment get _alignment {
     switch (_positionState) {
@@ -25,25 +73,22 @@ class _SummaryCardState extends State<SummaryCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Align posiciona o card dentro do Stack na Dashboard
     return Align(
       alignment: _alignment,
       child: GestureDetector(
         onHorizontalDragUpdate: (details) {
-          // Um limiar para evitar deslizes acidentais
           if (details.primaryDelta!.abs() > 2) {
-            if (details.primaryDelta! > 0) { // Deslizando para a direita
+            if (details.primaryDelta! > 0) {
               if (_positionState != 1) {
                 setState(() => _positionState = 1);
               }
-            } else { // Deslizando para a esquerda
+            } else {
               if (_positionState != -1) {
                 setState(() => _positionState = -1);
               }
             }
           }
         },
-        // AnimatedSwitcher troca entre o estado expandido e minimizado com uma animação
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           transitionBuilder: (Widget child, Animation<double> animation) {
@@ -57,7 +102,6 @@ class _SummaryCardState extends State<SummaryCard> {
     );
   }
 
-  // A visualização padrão, expandida e centralizada
   Widget _buildExpandedView() {
     return Card(
       key: const ValueKey('expanded'),
@@ -69,54 +113,60 @@ class _SummaryCardState extends State<SummaryCard> {
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            _buildSummaryItem(context, color: AppColors.vermelhoPerigo, count: 3, label: 'Offline'),
-            _buildSummaryItem(context, color: AppColors.amareloAlerta, count: 5, label: 'Alertas'),
-            _buildSummaryItem(context, color: AppColors.verdeSucesso, count: 1, label: 'Em Rota'),
-          ],
-        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  _buildSummaryItem(context, color: AppColors.danger, count: _offlineCount, label: 'Offline'),
+                  _buildSummaryItem(context, color: AppColors.alert, count: _alertCount, label: 'Em Alerta'),
+                  _buildSummaryItem(context, color: AppColors.sucess, count: _onlineCount, label: 'Online'),
+                ],
+              ),
       ),
     );
   }
 
-  // A visualização minimizada que aparece nos cantos
   Widget _buildMinimizedView() {
     return Card(
       key: const ValueKey('minimized'),
       margin: const EdgeInsets.all(16.0),
       color: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(50.0), // Borda arredondada
+        borderRadius: BorderRadius.circular(50.0),
       ),
       elevation: 4,
       child: InkWell(
         borderRadius: BorderRadius.circular(50.0),
         onTap: () {
           setState(() {
-            _positionState = 0; // Volta ao centro ao ser tocado
+            _positionState = 0;
           });
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min, // Ocupa o mínimo de espaço
-            children: [
-              _buildMinimizedItem(AppColors.vermelhoPerigo, 3),
-              const SizedBox(width: 10),
-              _buildMinimizedItem(AppColors.amareloAlerta, 5),
-              const SizedBox(width: 10),
-              _buildMinimizedItem(AppColors.verdeSucesso, 1),
-            ],
-          ),
+          child: _isLoading
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildMinimizedItem(AppColors.danger, _offlineCount),
+                    const SizedBox(width: 10),
+                    _buildMinimizedItem(AppColors.alert, _alertCount),
+                    const SizedBox(width: 10),
+                    _buildMinimizedItem(AppColors.sucess, _onlineCount),
+                  ],
+                ),
         ),
       ),
     );
   }
 
-  // Item individual para a visualização minimizada (círculo colorido com número)
   Widget _buildMinimizedItem(Color color, int count) {
     return Container(
       width: 24,
@@ -138,7 +188,6 @@ class _SummaryCardState extends State<SummaryCard> {
     );
   }
 
-  // Item para a visualização expandida
   Widget _buildSummaryItem(
     BuildContext context, {
     required Color color,

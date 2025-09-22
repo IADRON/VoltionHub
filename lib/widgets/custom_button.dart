@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Importe o pacote
-import '../theme/app_colors.dart';
+import '../core/common/constants/theme/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -17,8 +17,8 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.laranjaVoltion,
-        foregroundColor: AppColors.branco,
+        backgroundColor: AppColors.orange,
+        foregroundColor: AppColors.white,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),

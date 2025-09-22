@@ -25,10 +25,10 @@ class IntelligentRoutingModule extends StatelessWidget {
               markers: serviceOrders.map((order) {
                 // Para um aplicativo real, você precisaria de um geocodificador para converter o endereço em coordenadas
                 return Marker(
-                  markerId: MarkerId(order.title),
+                  markerId: MarkerId(order.transformer),
                   position: const LatLng(-27.59537, -48.54804), // Coordenada de exemplo
                   infoWindow: InfoWindow(
-                    title: order.title,
+                    title: order.transformer,
                     snippet: order.address,
                   ),
                 );
@@ -62,7 +62,7 @@ class IntelligentRoutingModule extends StatelessWidget {
                   leading: CircleAvatar(
                     child: Text('${index + 1}'),
                   ),
-                  title: Text(order.title),
+                  title: Text(order.transformer),
                   subtitle: Text(order.address),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () {

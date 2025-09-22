@@ -1,24 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:voltionhubapp/models/transformer.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'widgets/map.dart';
 import 'widgets/summary_card.dart';
 import 'widgets/transformer_details_panel.dart';
 import 'widgets/header.dart';
-
-class Transformer {
-  final String id;
-  final String status;
-  final double latitude;
-  final double longitude;
-  final String details;
-
-  Transformer({
-    required this.id,
-    required this.status,
-    required this.latitude,
-    required this.longitude,
-    required this.details,
-  });
-}
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -28,11 +15,36 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final List<Transformer> transformers = [
-    Transformer(id: 'TR-45881', status: 'alerta', latitude: -27.59537, longitude: -48.54804, details: 'Capacidade: 500kVA\nEndereço: Rua das Flores, 123\nÚltima Manutenção: 10/07/2025'),
-    Transformer(id: 'TR-67890', status: 'offline', latitude: -27.59690, longitude: -48.54910, details: 'Capacidade: 750kVA\nEndereço: Av. Principal, 456\nÚltima Manutenção: 01/03/2025'),
-    Transformer(id: 'TR-13579', status: 'online', latitude: -27.59480, longitude: -48.54650, details: 'Capacidade: 300kVA\nEndereço: Beco da Calesita, 789\nÚltima Manutenção: 15/08/2025'),
-  ];
+  List<Transformer> transformers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTransformers();
+  }
+
+  Future<void> _fetchTransformers() async {
+    final url = Uri.parse('http://172.16.1.121:3000/transformers');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          transformers = data.map((item) => Transformer(
+                id: item['id'],
+                status: item['status'],
+                latitude: item['latitude'],
+                longitude: item['longitude'],
+                capacity: item['capacity'],
+                address: item['address'],
+                lastMaintenance: item['last_maintenance'],
+                )).toList();
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   void _onMarkerTapped(Transformer transformer) {
     showModalBottomSheet(
@@ -58,7 +70,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             transformers: transformers,
             onMarkerTapped: _onMarkerTapped,
           ),
-          const SummaryCard(), // Remova o Align
+          const SummaryCard(),
         ],
       ),
     );

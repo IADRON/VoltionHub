@@ -1,12 +1,13 @@
 // lib/models/branch.dart
 
 import 'dart:convert';
+import 'package:voltionhubapp/models/user.dart';
 
 class Branch {
-  final int id; // Changed to int
+  final int id;
   final String name;
   final String address;
-  final List<String> subAdmins;
+  final List<User> subAdmins;
   final int transformersNeedingMaintenance;
 
   Branch({
@@ -18,18 +19,18 @@ class Branch {
   });
 
   factory Branch.fromJson(Map<String, dynamic> json) {
-    // Handle JSONB from postgres which might be a string
     List<dynamic> subAdminsDynamic = json['sub_admins'] is String
         ? jsonDecode(json['sub_admins'])
-        : json['sub_admins'];
+        : json['sub_admins'] ?? [];
+
+    List<User> subAdminUsers = subAdminsDynamic.map((data) => User.fromJson(data)).toList();
 
     return Branch(
       id: json['id'],
       name: json['name'],
       address: json['address'],
-      subAdmins: List<String>.from(subAdminsDynamic),
-      // The API calculates this value for us
-      transformersNeedingMaintenance: int.parse(json['transformers_needing_maintenance'] ?? '0'),
+      subAdmins: subAdminUsers,
+      transformersNeedingMaintenance: int.parse(json['transformers_needing_maintenance']?.toString() ?? '0'),
     );
   }
 }

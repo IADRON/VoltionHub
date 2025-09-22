@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../core/common/constants/theme/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -46,7 +46,7 @@ class CustomTextField extends StatelessWidget {
               BorderSide(color: Theme.of(context).colorScheme.onSurface),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: AppColors.laranjaVoltion, width: 2),
+          borderSide: BorderSide(color: AppColors.orange, width: 2),
         ),
       ),
     );

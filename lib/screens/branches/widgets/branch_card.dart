@@ -6,11 +6,15 @@ import 'package:voltionhubapp/models/branch.dart';
 class BranchCard extends StatelessWidget {
   final Branch branch;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const BranchCard({
     super.key,
     required this.branch,
     required this.onTap,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -24,9 +28,28 @@ class BranchCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                branch.name,
-                style: Theme.of(context).textTheme.titleLarge,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      branch.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: onEdit,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: onDelete,
+                      ),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(branch.address),
@@ -34,7 +57,7 @@ class BranchCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Transformadores Precisando de Manutenção:'),
+                  const Text('Transformers Needing Maintenance:'),
                   Text(
                     '${branch.transformersNeedingMaintenance}',
                     style: const TextStyle(fontWeight: FontWeight.bold),

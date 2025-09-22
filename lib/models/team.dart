@@ -1,17 +1,20 @@
 // lib/models/team.dart
 
 import 'employee.dart';
+import 'user.dart';
 
 class Team {
-  final int id; // Changed to int
+  final int id;
   String name;
   final int branchId;
+  final User? responsible; // Can be null
   List<Employee> members;
 
   Team({
     required this.id,
     required this.name,
     required this.branchId,
+    this.responsible,
     required this.members,
   });
 
@@ -23,6 +26,7 @@ class Team {
       id: json['id'],
       name: json['name'],
       branchId: json['branch_id'],
+      responsible: json['responsible'] != null ? User.fromJson(json['responsible']) : null,
       members: employeeMembers,
     );
   }
@@ -32,6 +36,7 @@ class Team {
       'id': id,
       'name': name,
       'branch_id': branchId,
+      'responsible_id': responsible?.id,
       'members': members.map((e) => e.toJson()).toList(),
     };
   }

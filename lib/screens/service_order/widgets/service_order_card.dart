@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voltionhubapp/models/service_order.dart';
-import 'package:voltionhubapp/theme/app_colors.dart';
+import 'package:voltionhubapp/core/common/constants/theme/app_colors.dart';
 
 class ServiceOrderCard extends StatelessWidget {
   final ServiceOrder order;
@@ -21,15 +21,15 @@ class ServiceOrderCard extends StatelessWidget {
   Color _getPriorityColor(String priority) {
     switch (priority.toLowerCase()) {
       case 'urgente':
-        return AppColors.vermelhoPerigo;
+        return AppColors.danger;
       case 'média':
-        return AppColors.laranjaVoltion;
+        return AppColors.orange;
       case 'baixa':
-        return AppColors.amareloAlerta;
+        return AppColors.alert;
       case 'em andamento':
-        return AppColors.verdeSucesso;
+        return AppColors.sucess;
       default:
-        return AppColors.cinzaEscuro;
+        return AppColors.darkGrey;
     }
   }
 
@@ -55,7 +55,7 @@ class ServiceOrderCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
-      color: isSelected ? AppColors.laranjaVoltion.withOpacity(0.2) : null,
+      color: isSelected ? AppColors.orange.withOpacity(0.2) : null,
       elevation: 3,
       child: InkWell(
         onTap: onTap,
@@ -80,7 +80,7 @@ class ServiceOrderCard extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            order.title,
+                            order.transformer,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge
@@ -102,29 +102,36 @@ class ServiceOrderCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 12,
-                              backgroundColor: _getPriorityColor(order.priority),
-                              child: Icon(
-                                _getPriorityIcon(order.priority),
-                                color: Colors.white,
-                                size: 14,
+                        Flexible(
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 12,
+                                backgroundColor: _getPriorityColor(order.priority),
+                                child: Icon(
+                                  _getPriorityIcon(order.priority),
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              order.priority,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(width: 8),
+                              Text(
+                                order.priority,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'Equipe: ${order.assignedTeam}',
-                          style: Theme.of(context).textTheme.bodySmall,
+                              const SizedBox(width: 48),
+                              Expanded(
+                                child: Text(
+                                  'Equipe: ${order.assignedTeam}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

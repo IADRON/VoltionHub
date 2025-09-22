@@ -4,7 +4,7 @@ import 'package:voltionhubapp/screens/profile/settings/account_settings_screen.d
 import 'package:voltionhubapp/screens/profile/settings/notifications_settings_screen.dart';
 import 'package:voltionhubapp/screens/profile/settings/security_settings_screen.dart';
 import 'package:voltionhubapp/screens/profile/settings/support_screen.dart';
-import 'package:voltionhubapp/theme/app_colors.dart';
+import 'package:voltionhubapp/core/common/constants/theme/app_colors.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -56,7 +56,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 20),
           const CircleAvatar(
             radius: 50,
-            backgroundColor: AppColors.laranjaVoltion,
+            backgroundColor: AppColors.orange,
             child: Icon(
               Icons.person,
               size: 50,
@@ -114,10 +114,10 @@ class ProfileScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.logout, color: AppColors.vermelhoPerigo),
+            leading: const Icon(Icons.logout, color: AppColors.danger),
             title: const Text(
               'Sair',
-              style: TextStyle(color: AppColors.vermelhoPerigo),
+              style: TextStyle(color: AppColors.danger),
             ),
             onTap: () {
               _showLogoutConfirmation(context);

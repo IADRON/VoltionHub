@@ -1,12 +1,13 @@
 // lib/screens/main_navigation.dart
 
 import 'package:flutter/material.dart';
+import 'package:voltionhubapp/core/common/constants/theme/app_colors.dart';
+import 'package:voltionhubapp/core/common/constants/theme/app_icons.dart';
 import 'package:voltionhubapp/screens/dashboard/dashboard_screen.dart';
 import 'package:voltionhubapp/screens/profile/profile_screen.dart';
 import 'package:voltionhubapp/screens/service_order/service_order_screen.dart';
-import 'package:voltionhubapp/screens/branches/branches_screen.dart'; // Import BranchesScreen
-import 'package:voltionhubapp/screens/teams/teams_screen.dart'; // Import TeamsScreen
-import 'package:voltionhubapp/theme/app_colors.dart';
+import 'package:voltionhubapp/screens/branches/branches_screen.dart';
+import 'package:voltionhubapp/screens/teams/teams_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -18,12 +19,11 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
-  // Adicione as novas telas à lista de widgets
   static const List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
     ServiceOrderScreen(),
-    BranchesScreen(), // Aba de Sedes
-    TeamsScreen(),    // Aba de Equipes
+    BranchesScreen(),
+    TeamsScreen(),   
     ProfileScreen(),
   ];
 
@@ -40,32 +40,36 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        // Aumente o número de items
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
+            icon: Icon(AppIcons.navMap),
+            activeIcon: Icon(AppIcons.navMapOn),
             label: 'Mapa',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt),
+            icon: Icon(AppIcons.navOS),
+            activeIcon: Icon(AppIcons.navOSOn),
             label: 'Ordens de Serviço',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business), // Ícone para Sedes
+            icon: Icon(AppIcons.navBranches),
+            activeIcon: Icon(AppIcons.navBranchesOn),
             label: 'Sedes',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.group), // Ícone para Equipes
+            icon: Icon(AppIcons.navTeams),
+            activeIcon: Icon(AppIcons.navTeamsOn),
             label: 'Equipes',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(AppIcons.navProfile),
+            activeIcon: Icon(AppIcons.navProfileOn),
             label: 'Perfil',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: AppColors.laranjaVoltion,
-        unselectedItemColor: Colors.grey, // Adicione para melhor visualização
+        selectedItemColor: AppColors.orange,
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
     );
