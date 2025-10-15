@@ -1,16 +1,14 @@
 Gerenciamento de usuários admin, sub-admins e usuários de campo.
-Animação de carregamento.
 Configurações de perfil.
 Procurar locais e transformadores no mapa.
 Aproximar ao clicar em pontos do mapa.
 Unfocus no formulário e barras de pesquisa.
-Formulário com campos corrigidos para pegar dados existentes e pré-definidos
-Barra de pesquisa na interface de OSs.
+Formulário com campos corrigidos para pegar dados existentes e pré-definidos.
 Edição e conclusão de OS.
-Notigicações.
+Notificações.
 Dia/Hora de OS e de conclusão da OS.
 Responsável pela conclusão da OS.
-Opção de manutenção/desligamento agendado(a)
+Opção de manutenção/desligamento agendado(a).
 Confirmar exclusão da OS.
 Rotas já setadas.
 Autenticação de login.
@@ -20,6 +18,7 @@ Validators implementados.
 Salvar último login e manter sessão ativa.
 Impressão digital para login.
 
+Animação de carregamento.
 Segurança e upload do servidor pra nuvem.
 Detectar usuários de campo perto de uma OS(que não foi criada manualmente) e criar OS automática.
 

@@ -2,17 +2,17 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:voltionhubapp/models/branch.dart';
-import 'package:voltionhubapp/models/employee.dart';
-import 'package:voltionhubapp/models/team.dart';
-import 'package:voltionhubapp/models/user.dart';
+import '/data/models/branch.dart';
+import '/data/models/employee.dart';
+import '/data/models/team.dart';
+import '/data/models/user.dart';
 
 class ApiService {
-  final String _baseUrl = 'http://172.16.1.121:3000';
+  final String baseUrl = 'http://192.168.100.51:3000';
 
   // --- User Methods ---
   Future<List<User>> getUsers() async {
-    final response = await http.get(Uri.parse('$_baseUrl/users'));
+    final response = await http.get(Uri.parse('$baseUrl/users'));
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
       return data.map((item) => User.fromJson(item)).toList();
@@ -23,18 +23,37 @@ class ApiService {
 
   // --- Branch Methods ---
   Future<List<Branch>> getBranches() async {
-    final response = await http.get(Uri.parse('$_baseUrl/branches'));
+    final response = await http.get(Uri.parse('$baseUrl/branches'));
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((item) => Branch.fromJson(item)).toList();
+      final decodedBody = json.decode(response.body);
+      
+      // Tenta interpretar como uma lista direta
+      if (decodedBody is List) {
+        return decodedBody.map((item) => Branch.fromJson(item)).toList();
+      } 
+      // Se for um mapa, tenta encontrar a lista em uma chave comum como 'branches' ou 'data'
+      else if (decodedBody is Map<String, dynamic>) {
+        if (decodedBody.containsKey('branches') && decodedBody['branches'] is List) {
+          return (decodedBody['branches'] as List)
+              .map((item) => Branch.fromJson(item))
+              .toList();
+        } else if (decodedBody.containsKey('data') && decodedBody['data'] is List) {
+          return (decodedBody['data'] as List)
+              .map((item) => Branch.fromJson(item))
+              .toList();
+        }
+      }
+      // Se nenhuma das estruturas for encontrada, lança uma exceção
+      throw Exception('Failed to load branches: Unexpected JSON format');
+
     } else {
-      throw Exception('Failed to load branches');
+      throw Exception('Failed to load branches with status code: ${response.statusCode}');
     }
   }
 
   Future<Branch> addBranch(String name, String address, List<int> subAdminIds) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/branches'),
+      Uri.parse('$baseUrl/branches'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'name': name, 'address': address, 'sub_admin_ids': subAdminIds}),
     );
@@ -47,7 +66,7 @@ class ApiService {
 
   Future<Branch> updateBranch(int id, String name, String address, List<int> subAdminIds) async {
     final response = await http.put(
-      Uri.parse('$_baseUrl/branches/$id'),
+      Uri.parse('$baseUrl/branches/$id'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'name': name, 'address': address, 'sub_admin_ids': subAdminIds}),
     );
@@ -59,7 +78,7 @@ class ApiService {
   }
 
   Future<void> deleteBranch(int id) async {
-    final response = await http.delete(Uri.parse('$_baseUrl/branches/$id'));
+    final response = await http.delete(Uri.parse('$baseUrl/branches/$id'));
     if (response.statusCode != 204) {
       throw Exception('Failed to delete branch');
     }
@@ -70,7 +89,7 @@ class ApiService {
   // --- Team Methods ---
   Future<Team> addTeam(String name, int branchId, int? responsibleId) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/teams'),
+      Uri.parse('$baseUrl/teams'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'name': name, 'branch_id': branchId, 'responsible_id': responsibleId}),
     );
@@ -83,7 +102,7 @@ class ApiService {
 
   Future<Team> updateTeam(int teamId, String name, int? responsibleId) async {
     final response = await http.put(
-      Uri.parse('$_baseUrl/teams/$teamId'),
+      Uri.parse('$baseUrl/teams/$teamId'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'name': name, 'responsible_id': responsibleId}),
     );
@@ -95,7 +114,7 @@ class ApiService {
   }
 
   Future<List<Team>> getTeamsForBranch(int branchId) async {
-    final response = await http.get(Uri.parse('$_baseUrl/branches/$branchId/teams'));
+    final response = await http.get(Uri.parse('$baseUrl/branches/$branchId/teams'));
      if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
       return data.map((item) => Team.fromJson(item)).toList();
@@ -108,7 +127,7 @@ class ApiService {
   // --- Team Methods ---
 
   Future<List<Team>> getTeams() async {
-    final response = await http.get(Uri.parse('$_baseUrl/teams'));
+    final response = await http.get(Uri.parse('$baseUrl/teams'));
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
       return data.map((item) => Team.fromJson(item)).toList();
@@ -118,7 +137,7 @@ class ApiService {
   }
 
   Future<void> deleteTeam(int teamId) async {
-    final response = await http.delete(Uri.parse('$_baseUrl/teams/$teamId'));
+    final response = await http.delete(Uri.parse('$baseUrl/teams/$teamId'));
     if (response.statusCode != 204) {
       throw Exception('Failed to delete team');
     }
@@ -128,7 +147,7 @@ class ApiService {
 
   Future<Employee> addEmployee(String name, String role, int teamId) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/employees'),
+      Uri.parse('$baseUrl/employees'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'name': name, 'role': role, 'team_id': teamId}),
     );
@@ -141,7 +160,7 @@ class ApiService {
 
   Future<Employee> updateEmployee(int id, String name, String role, int teamId) async {
     final response = await http.put(
-      Uri.parse('$_baseUrl/employees/$id'),
+      Uri.parse('$baseUrl/employees/$id'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'name': name, 'role': role, 'team_id': teamId}),
     );
@@ -153,7 +172,7 @@ class ApiService {
   }
 
   Future<void> deleteEmployee(int employeeId) async {
-    final response = await http.delete(Uri.parse('$_baseUrl/employees/$employeeId'));
+    final response = await http.delete(Uri.parse('$baseUrl/employees/$employeeId'));
     if (response.statusCode != 204) {
       throw Exception('Failed to delete employee');
     }

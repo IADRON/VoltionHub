@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/login/login_screen.dart'; // Mude o import
+import 'ui/screens/login/login_screen.dart';
 import 'core/common/constants/theme/app_theme.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(), // Mude a tela inicial
+      home: const LoginScreen(),
     );
   }
 }

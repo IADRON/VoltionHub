@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 class AppIcons {
 
-  // Header
-  static const IconData headSearch = Icons.search;
-
   // NavBar
   static const IconData navMap = Icons.map_outlined;
   static const IconData navMapOn = Icons.map;
