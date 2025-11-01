@@ -11,7 +11,7 @@ class PriorityData {
       case 'baixa':
         return AppColors.alert;
       case 'em andamento':
-        return AppColors.sucess;
+        return AppColors.success;
       default:
         return AppColors.darkGrey;
     }

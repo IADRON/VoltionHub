@@ -1,13 +1,13 @@
-// lib/services/api_service.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '/data/models/branch.dart';
 import '/data/models/employee.dart';
 import '/data/models/team.dart';
+import '/data/models/transformer_metric.dart';
 import '/data/models/user.dart';
 
 class ApiService {
+  // final String baseUrl = 'http://172.16.1.216:3000';
   final String baseUrl = 'http://192.168.100.51:3000';
 
   // --- User Methods ---
@@ -27,11 +27,9 @@ class ApiService {
     if (response.statusCode == 200) {
       final decodedBody = json.decode(response.body);
       
-      // Tenta interpretar como uma lista direta
       if (decodedBody is List) {
         return decodedBody.map((item) => Branch.fromJson(item)).toList();
       } 
-      // Se for um mapa, tenta encontrar a lista em uma chave comum como 'branches' ou 'data'
       else if (decodedBody is Map<String, dynamic>) {
         if (decodedBody.containsKey('branches') && decodedBody['branches'] is List) {
           return (decodedBody['branches'] as List)
@@ -43,7 +41,6 @@ class ApiService {
               .toList();
         }
       }
-      // Se nenhuma das estruturas for encontrada, lança uma exceção
       throw Exception('Failed to load branches: Unexpected JSON format');
 
     } else {
@@ -84,8 +81,6 @@ class ApiService {
     }
   }
   
-  // ... outros métodos ...
-  
   // --- Team Methods ---
   Future<Team> addTeam(String name, int branchId, int? responsibleId) async {
     final response = await http.post(
@@ -115,16 +110,13 @@ class ApiService {
 
   Future<List<Team>> getTeamsForBranch(int branchId) async {
     final response = await http.get(Uri.parse('$baseUrl/branches/$branchId/teams'));
-     if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
       return data.map((item) => Team.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load teams for branch');
     }
   }
-
-
-  // --- Team Methods ---
 
   Future<List<Team>> getTeams() async {
     final response = await http.get(Uri.parse('$baseUrl/teams'));
@@ -144,14 +136,13 @@ class ApiService {
   }
 
   // --- Employee Methods ---
-
   Future<Employee> addEmployee(String name, String role, int teamId) async {
     final response = await http.post(
       Uri.parse('$baseUrl/employees'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'name': name, 'role': role, 'team_id': teamId}),
     );
-     if (response.statusCode == 201) {
+      if (response.statusCode == 201) {
       return Employee.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to add employee');
@@ -180,4 +171,50 @@ class ApiService {
 
   // --- Transformers Methods ---
 
+  // --- START: Transformer Metrics Methods ---
+
+  Future<List<TransformerMetric>> getTransformerMetrics(
+    String transformerId, {
+    DateTime? start,
+    DateTime? end,
+  }) async {
+    var uri = Uri.parse('$baseUrl/transformers/$transformerId/metrics');
+    
+    final Map<String, String> queryParameters = {};
+    if (start != null) {
+      queryParameters['start'] = start.toIso8601String();
+    }
+    if (end != null) {
+      queryParameters['end'] = end.toIso8601String();
+    }
+
+    if (queryParameters.isNotEmpty) {
+      uri = uri.replace(queryParameters: queryParameters);
+    }
+
+    final response = await http.get(uri);
+    
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      return data.map((item) => TransformerMetric.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load metrics for transformer $transformerId');
+    }
+  }
+
+  Future<TransformerMetric> addMetric(TransformerMetric metric) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/metrics'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(metric.toJson()),
+    );
+    
+    if (response.statusCode == 201) {
+      return TransformerMetric.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to add metric');
+    }
+  }
+
+  // --- END: Transformer Metrics Methods ---
 }

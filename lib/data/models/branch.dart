@@ -23,11 +23,8 @@ class Branch {
 
     if (subAdminsRaw is String) {
       try {
-        // Tenta decodificar a string. Se for JSON válido, 'subAdminsRaw' vira Map ou List.
         subAdminsRaw = jsonDecode(subAdminsRaw);
       } catch (e) {
-        // Se a decodificação falhar (FormatException), assume que é uma string simples (e-mail, etc.)
-        // ou um formato inesperado, e mantém subAdminsList como vazia.
         print('Erro ao decodificar sub_admins como String: $e'); // Para depuração
       }
     }

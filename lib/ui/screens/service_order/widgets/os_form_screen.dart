@@ -69,7 +69,7 @@ class _OsFormScreenState extends State<OsFormScreen> {
 
         if (response.statusCode == 201) { // 201 = Created
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Ordem de Serviço salva com sucesso!'), backgroundColor: Colors.green),
+            const SnackBar(content: Text('Ordem de Serviço salva com successo!'), backgroundColor: Colors.green),
           );
           // Retorna 'true' para a tela anterior para indicar que a lista deve ser atualizada
           Navigator.of(context).pop(true);

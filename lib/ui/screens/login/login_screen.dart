@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Gap(48),
                   CustomTextField(
                     controller: _userIdController,
-                    labelText: 'ID do Usuário',
+                    labelText: 'Usuário',
                     icon: Icons.person_outline,
                   ),
                   const Gap(16),
@@ -71,17 +71,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   CustomButton(
                     text: 'Entrar',
                     onPressed: () {
-                        Navigator.pushReplacement(
+                        // Implement login logic here
+                    },
+                  ),
+                  const Gap(16),
+                  TextButton(
+                    onPressed: () {
+                      // login sem verificação, para testes, credenciais serão de dev (possui todas as funções)
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const MainNavigationScreen(),
                           ),
                         );
                     },
-                  ),
-                  const Gap(16),
-                  TextButton(
-                    onPressed: () {},
                     child: Text(
                       'Esqueci minha senha',
                       style: GoogleFonts.inter(

@@ -19,6 +19,7 @@ class _SummaryCardState extends State<SummaryCard> {
   int _onlineCount = 0;
   int _alertCount = 0;
   int _offlineCount = 0;
+  int _maintenanceCount = 0;
 
   final ApiService _apiService = ApiService();
 
@@ -48,6 +49,7 @@ class _SummaryCardState extends State<SummaryCard> {
           _onlineCount = allTransformers.where((t) => t.status == 'online').length;
           _alertCount = allTransformers.where((t) => t.status == 'alerta').length;
           _offlineCount = allTransformers.where((t) => t.status == 'offline').length;
+          _maintenanceCount = allTransformers.where((t) => t.status == 'em manutencao').length;
           _isLoading = false;
         });
       } else {
@@ -125,7 +127,8 @@ class _SummaryCardState extends State<SummaryCard> {
                 children: [
                   _buildSummaryItem(context, color: AppColors.danger, count: _offlineCount, label: 'Offline'),
                   _buildSummaryItem(context, color: AppColors.alert, count: _alertCount, label: 'Em Alerta'),
-                  _buildSummaryItem(context, color: AppColors.sucess, count: _onlineCount, label: 'Online'),
+                  _buildSummaryItem(context, color: AppColors.maintenance, count: _maintenanceCount, label: 'Em Manutenção'),
+                  _buildSummaryItem(context, color: AppColors.success, count: _onlineCount, label: 'Online'),
                 ],
               ),
       ),
@@ -163,7 +166,9 @@ class _SummaryCardState extends State<SummaryCard> {
                     const Gap(10),
                     _buildMinimizedItem(AppColors.alert, _alertCount),
                     const Gap(10),
-                    _buildMinimizedItem(AppColors.sucess, _onlineCount),
+                    _buildMinimizedItem(AppColors.maintenance, _maintenanceCount),
+                    const Gap(10),
+                    _buildMinimizedItem(AppColors.success, _onlineCount),
                   ],
                 ),
         ),

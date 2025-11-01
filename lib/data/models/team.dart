@@ -1,5 +1,3 @@
-// lib/models/team.dart
-
 import 'employee.dart';
 import 'user.dart';
 
@@ -7,7 +5,7 @@ class Team {
   final int id;
   String name;
   final int branchId;
-  final User? responsible; // Can be null
+  final User? responsible;
   List<Employee> members;
 
   Team({
@@ -19,7 +17,7 @@ class Team {
   });
 
   factory Team.fromJson(Map<String, dynamic> json) {
-    var membersList = json['members'] as List;
+    var membersList = json['members'] as List? ?? [];
     List<Employee> employeeMembers = membersList.map((i) => Employee.fromJson(i)).toList();
 
     return Team(

@@ -69,7 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: const Header(),
       body: Stack(
         children: [
-          Map(
+          MapWidget(
             transformers: transformers,
             onMarkerTapped: _onMarkerTapped,
           ),
